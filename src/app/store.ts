@@ -1,15 +1,13 @@
-import {
-    tasksReducer
-} from '../features/TodolistsList/tasks-reducer';
+import {tasksReducer} from '../features/TodolistsList/tasks-reducer';
 import {todolistsReducer} from '../features/TodolistsList/todolists-reducer';
 import {applyMiddleware, combineReducers, createStore} from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import {appReducer} from './app-reducer'
 import {authReducer} from '../features/Login/auth-reducer'
 import createSagaMiddleware from 'redux-saga'
-import {takeEvery, all} from 'redux-saga/effects'
-import {appWatcher, initializeAppWorkerSaga} from "./app-sagas";
-import {fetchTasksWorkerSaga, removeTaskWorkerSaga, tasksWatcher} from "../features/TodolistsList/tasks-sagas";
+import {all} from 'redux-saga/effects'
+import {appWatcher} from "./app-sagas";
+import {tasksWatcher} from "../features/TodolistsList/tasks-sagas";
 import {todolistsWatcher} from "../features/TodolistsList/todolists-sagas";
 
 // объединяя reducer-ы с помощью combineReducers,

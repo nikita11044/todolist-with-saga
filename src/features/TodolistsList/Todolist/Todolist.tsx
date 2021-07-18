@@ -27,9 +27,7 @@ export const Todolist = React.memo(function ({demo = false, ...props}: PropsType
 
     const dispatch = useDispatch()
     useEffect(() => {
-        if (demo) {
-            return
-        }
+        if (demo) return
         dispatch(fetchTasksSagaAC(props.todolist.id))
     }, [])
 
