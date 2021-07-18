@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {loginTC} from './auth-reducer'
 import {AppRootStateType} from '../../app/store'
 import { Redirect } from 'react-router-dom'
+import {loginSagaAC} from "./auth-sagas";
 
 export const Login = () => {
     const dispatch = useDispatch()
@@ -31,7 +32,7 @@ export const Login = () => {
             rememberMe: false
         },
         onSubmit: values => {
-            dispatch(loginTC(values));
+            dispatch(loginSagaAC(values));
         },
     })
 

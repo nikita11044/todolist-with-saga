@@ -1,12 +1,12 @@
 import {call, put, takeEvery, takeLatest} from "redux-saga/effects";
-import {GetTasksResponse, todolistsAPI, UpdateTaskModelType} from "../../api/todolists-api";
+import {GetTasksResponse, ResponseType, TaskType, todolistsAPI, UpdateTaskModelType} from "../../api/todolists-api";
 import {addTaskAC, removeTaskAC, setTasksAC, UpdateDomainTaskModelType, updateTaskAC} from "./tasks-reducer";
 import {AppRootStateType, store} from "../../app/store";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 import {setAppStatusAC} from "../../app/app-reducer";
 import {AxiosResponse} from "axios";
 
-export function* fetchTasksWorkerSaga(action: any) {
+export function* fetchTasksWorkerSaga(action: ReturnType<typeof fetchTasksSagaAC>) {
     try {
         yield put(setAppStatusAC('loading'))
         const res: AxiosResponse<GetTasksResponse> = yield call(todolistsAPI.getTasks, action.todolistId)
@@ -17,15 +17,15 @@ export function* fetchTasksWorkerSaga(action: any) {
     }
 }
 
-export function* removeTaskWorkerSaga(action: any) {
-    const res = yield call(todolistsAPI.deleteTask, action.todolistId, action.taskId)
+export function* removeTaskWorkerSaga(action: ReturnType<typeof removeTaskSagaAC>) {
+    yield call(todolistsAPI.deleteTask, action.todolistId, action.taskId)
     yield put(removeTaskAC(action.taskId, action.todolistId))
 }
 
-export function* addTaskWorkerSaga(action: any) {
+export function* addTaskWorkerSaga(action: ReturnType<typeof addTaskSagaAC>) {
     try {
         yield put(setAppStatusAC('loading'))
-        const res = yield call(todolistsAPI.createTask, action.todolistId, action.title)
+        const res: AxiosResponse<ResponseType<{ item: TaskType}>> = yield call(todolistsAPI.createTask, action.todolistId, action.title)
         if (res.data.resultCode === 0) {
             const task = res.data.data.item
             yield put(addTaskAC(task))
@@ -38,7 +38,7 @@ export function* addTaskWorkerSaga(action: any) {
     }
 }
 
-export function* updateTaskWorkerSaga(action: any) {
+export function* updateTaskWorkerSaga(action: ReturnType<typeof updateTaskSagaAC>) {
     const state = store.getState()
     const task = state.tasks[action.todolistId].find(t => t.id === action.taskId)
     if (!task) {
@@ -58,7 +58,7 @@ export function* updateTaskWorkerSaga(action: any) {
     }
 
     try {
-        const res = yield call(todolistsAPI.updateTask, action.todolistId, action.taskId, action.apiModel)
+        const res: AxiosResponse<ResponseType<TaskType>> = yield call(todolistsAPI.updateTask, action.todolistId, action.taskId, apiModel)
         if (res.data.resultCode === 0) {
             yield put(updateTaskAC(action.taskId, action.domainModel, action.todolistId))
         } else {

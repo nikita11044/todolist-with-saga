@@ -9,6 +9,7 @@ import {all} from 'redux-saga/effects'
 import {appWatcher} from "./app-sagas";
 import {tasksWatcher} from "../features/TodolistsList/tasks-sagas";
 import {todolistsWatcher} from "../features/TodolistsList/todolists-sagas";
+import {authWatcher} from "../features/Login/auth-sagas";
 
 // объединяя reducer-ы с помощью combineReducers,
 // мы задаём структуру нашего единственного объекта-состояния
@@ -30,7 +31,7 @@ export type AppRootStateType = ReturnType<typeof rootReducer>
 sagaMiddleware.run(rootWatcher)
 
 function* rootWatcher() {
-    yield all([appWatcher(), tasksWatcher(), todolistsWatcher()])
+    yield all([appWatcher(), tasksWatcher(), todolistsWatcher(), authWatcher()])
 }
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
